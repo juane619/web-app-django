@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% load widget_tweaks %}
+
+{% block Content%}
+
+<form class="form-vertical" method="POST" action="#">{%csrf_token%}
+	<div class="col-md-8">
+		{%if not inserted%}
+		<h2>Add new restaurant</h2>
+		<hr>
+		{%comment%}
+		<!-- <div class="form-group">
+			<label for="rest_name">Restaurant name:</label>
+			<input type="text" class="form-control" id="rest_name" placeholder="Enter name of restaurant" name="rest_name">
+		</div>
+		<div class="form-group">
+			<label for="rest_name">Localización restaurante:</label>
+			<input type="text" class="form-control" id="rest_loc" placeholder="Enter localization of restaurant" name="rest_loc">
+		</div> -->{%endcomment%}
+		{% for hidden_field in form.hidden_fields %}
+		{{ hidden_field }}
+		{% endfor %}
+
+		{% for field in form.visible_fields %}
+		<div class="form-group">
+			{{ field.label_tag }}
+			{% render_field field class="form-control" %}
+			{% if field.help_text %}
+			<small class="form-text text-muted">{{ field.help_text }}</small>
+			{% endif %}
+		</div>
+		{% endfor %}
+		<!-- {{form.as_p}} -->
+		<button type="submit" class="btn btn-primary"><i class="fa fa-user-plus"></i> Add restaurant</button>
+		{%else%}
+		{{inserted}}
+		Restaurant added..
+		<button class="btn btn-primary" type="submit" style="margin: 1rem 0;" onClick="window.history.back();return false;">Back</button>
+		{%endif%}
+	</div>
+</form>
+
+
+{%endblock%}

@@ -1,0 +1,266 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Juane's Website</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Mejor cargar  Bootstrap desde CDN ya que, si para otras páginas lo cargas, 
+  ya lo tienes en caché-->
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <!--Fuentes y iconos-->
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+  <!--jQuery and Popper? Bootstrap 4 use jQuery and Popper.js 
+    for JavaScript components (like modals, tooltips, popovers etc). 
+  -->
+
+
+
+  <!--My resources-->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script type="text/javascript" src="{% static 'js/query_functions.js' %}"></script>
+
+
+
+</head>
+
+<body>
+  <!--Head navbar-->
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index' %}">HOME</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav mr-auto">
+          <!-- REST Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              Restaurants
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'rest_find' %}">Search</a>
+              <a class="dropdown-item" href="{% url 'rest_insert' %}">Insert</a>
+            </div>
+          </li>
+          <!-- END REST Dropdown -->
+          <!-- Dishes Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              Dishes
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'dish_list' %}">Search</a>
+              <a class="dropdown-item" href="{% url 'dish_insert' %}">Insert</a>
+            </div>
+          </li>
+          <!-- END Dishes Dropdown -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'graphics' %}">Graphics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">About</a>
+          </li>
+        </ul>
+
+        <!--Login form-->
+        <ul class="navbar-nav ml-auto">
+          {%if not user.is_authenticated %}
+          {% if not "/accounts/login" in request.get_full_path %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+            <ul id="login-dp" class="dropdown-menu">
+              <li>
+                <div class="row">
+                  <div class="col-md-12">
+                    <form class="form" role="form" method="post" action="{% url 'account_login' %}" accept-charset="UTF-8"
+                      id="login-nav">
+                      {%csrf_token%}
+                      <div class="form-group">
+                        <label class="sr-only" for="login_user">Username</label>
+                        <input type="text" class="form-control" name="login_user" id="login_user" placeholder="Username"
+                          required>
+                      </div>
+                      <div class="form-group">
+                        <label class="sr-only" for="login_password">Password</label>
+                        <input type="password" class="form-control" name="login_password" id="login_password"
+                          placeholder="Password" required>
+                        <div class="help-block text-right"><a href="{% url 'account_change_password' %}">Forget the
+                            password ?</a></div>
+                      </div>
+
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                      </div>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox"> keep me logged-in
+                        </label>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="bottom text-center">
+                    New here ? <a href="{% url 'account_signup' %}"><b>Join Us</b></a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <!-- {%if fail%}
+            <div class="text-danger">Failed login!</div>
+            {%endif%} -->
+          </li>
+          {%endif%}
+          <!--end login form-->
+          {%else%}
+          <li class="nav-item">
+            <div class="text-success">
+              Welcome {{user}}!&nbsp;&nbsp;
+            </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>My page</b> <span class="caret"></span></a>
+            <ul id="login-dp" class="dropdown-menu">
+              <li>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="text-left">
+                      <a href="{% url 'user_detail' user  %}"><b>Edit profile</b></a>
+                    </div>
+                  </div>
+                  <div class="bottom text-center">
+                    <a href="{% url 'account_logout' %}">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+          {%endif%}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!--END head navbar-->
+
+  <!--Page Header-->
+  <header class="jumbotron page-heading">
+    <div class="container">
+      <h1>Practice 8</h1>
+      <p>Bootstrap 4. Responsive design. Django. JQuery. Ajax.</p>
+    </div>
+  </header>
+  <!--END Page Header-->
+
+  <!--Main content-->
+  <div class="container" style="margin-top:30px">
+    <div class="row">
+
+      <!--Right Menu-->
+      <div class="col-sm-12">
+        <!-- Change style JQuery -->
+
+        <!-- Rounded switch -->
+        <label class="switch">
+          <input type="checkbox" id="switch-mode-light">
+          <span class="slider round" data-on="yes" data-off="no"></span>
+        </label>
+
+        <button id="button-font-type" class="btn btn-info">Changue font-type</button>
+        <button id="button-font-size" class="btn btn-info">Changue font-size</button>
+        <!-- <button id="button2" class="btn btn-info">Changue ...</button> -->
+        <!-- END Change style JQuery -->
+
+        {% block Content %}
+        <h2 class="text-center">PRACTICE 8</h2>
+        <h4>Django with Bootsrap 4. Models. Maps</h4>
+        <h5>Nov 28, 2018</h5>
+
+        <div id="flip">Show changes in this practice!</div>
+        <ul class="list-group list-group-flush " id="changes-panel" style="margin-top: 1.5rem">
+          <li class="list-group-item list-group-item-primary text-center">Changes list</li>
+          <li class="list-group-item list-group-item-secondary">Better aparience and responsive design</li>
+          <li class="list-group-item list-group-item-secondary">Incorporation MongoDB</li>
+          <li class="list-group-item list-group-item-secondary">Added sending and receiving parameters via POST</li>
+          <li class="list-group-item list-group-item-secondary">Manage CRUD restaurants BD</li>
+          <li class="list-group-item list-group-item-secondary">Translate to English</li>
+          <li class="list-group-item list-group-item-secondary">Added JQuery</li>
+          <li class="list-group-item list-group-item-secondary">Added Ajax</li>
+          <li class="list-group-item list-group-item-secondary">Added Maps</li>
+        </ul>
+        {% endblock %}
+      </div>
+      <!--END right Menu-->
+    </div>
+
+  </div>
+  <!--END Main content-->
+
+  <!-- Footer -->
+  <footer class="page-footer font-small special-color-dark pt-4">
+
+    <!-- Footer Elements -->
+    <div class="container">
+
+      <!-- Social buttons -->
+      <ul class="list-unstyled list-inline text-center">
+        <li class="list-inline-item">
+          <a class="btn-floating btn-fb mx-1">
+            <i class="fa fa-facebook"> </i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn-floating btn-tw mx-1">
+            <i class="fa fa-twitter"> </i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn-floating btn-gplus mx-1">
+            <i class="fa fa-google-plus"> </i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn-floating btn-li mx-1">
+            <i class="fa fa-linkedin"> </i>
+          </a>
+        </li>
+        <li class="list-inline-item">
+          <a class="btn-floating btn-dribbble mx-1">
+            <i class="fa fa-dribbble"> </i>
+          </a>
+        </li>
+      </ul>
+      <!-- Social buttons -->
+
+
+      <!-- Footer Elements -->
+
+      <!-- Copyright -->
+      <div class="footer-copyright text-center py-3">© 2018 Copyright:
+        <a href="{% url 'index' %}"> JuanE</a>
+      </div>
+      <!-- Copyright -->
+    </div>
+  </footer>
+  <!-- END Footer -->
+
+</body>
+
+</html>

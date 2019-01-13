@@ -1,0 +1,33 @@
+
+{% extends "index.html" %}
+
+{% block Content %}
+
+
+<div id="search" class="col">
+	<h3>Search restaurants</h3>
+	<form action="{% url 'rest_found'%}" method="GET"  onsubmit="return modifyShowAll();">
+		<div class="col-sm-12 col-md-10 col-lg-8">
+			<h6> Search by: </h6>
+			<div class="form-check">
+				<label class="form-check-label">
+					<input name="tipo_busqueda" type="radio" value="rest_name" checked="checked"> Name restaurant
+				</label>
+			</div>
+			<div class="form-check">
+				<label class="form-check-label">
+					<input name="tipo_busqueda" type="radio" value="district_name"> District
+				</label>
+			</div>
+
+			<div class="form-group">
+				<input id="filter-field" class="form-control" name="filter" type="text" style="margin-top: 0.8rem" placeholder="Filter..">
+			</div>
+
+			<button class="btn btn-primary" type="submit" >Search</button>
+		</div>
+	</form>
+</div>
+
+
+{%endblock%}

@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% load widget_tweaks %}
+{% block Content %}
+
+<form class="form" role="form" method="post" action="{% url 'account_login' %}" accept-charset="UTF-8" id="login-nav">
+
+	{%csrf_token%}
+
+	{% for hidden_field in form.hidden_fields %}
+	{{ hidden_field }}
+	{% endfor %}
+
+	{% for field in form.visible_fields %}
+	<div class="form-group">
+		{{ field.label_tag }}
+		{% render_field field class="form-control" %}
+		{% if field.help_text %}
+		<small class="form-text text-muted">{{ field.help_text }}</small>
+		{% endif %}
+	</div>
+	{% endfor %}
+	<!-- {{ form.as_p }} -->
+	<div class="help-block text-right"><a href="">Forget the password ?</a></div>
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary btn-block">Sign in</button>
+	</div>
+</form>
+
+{%endblock%}

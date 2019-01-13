@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+{% load widget_tweaks %}
+
+{% block Content%}
+
+<form class="form-vertical" method="POST" action="#">{%csrf_token%}
+	<div class="col-md-8">
+		{%if not inserted%}
+		<h2>Inert new dish</h2>
+		<hr>
+		<!-- <div class="form-group">
+			<label for="dish_name">Dish name:</label>
+			<input type="text" class="form-control" id="dish_name" placeholder="Enter name of dish" name="dish_name">
+		</div>
+		<div class="form-group">
+			<label for="dish_name">Type of cousine:</label>
+			<input type="text" class="form-control" id="dish_name" placeholder="Enter name of dish" name="dish_name">
+		</div>
+		<div class="form-group">
+			<label for="dish_name">Allergens:</label>
+			<input type="text" class="form-control" id="dish_name" placeholder="Enter name of dish" name="dish_name">
+		</div>
+		<div class="form-group">
+			<label for="dish_name">Dish price:</label>
+			<input type="text" class="form-control" id="dish_name" placeholder="Enter name of dish" name="dish_name">
+		</div> -->
+		{% for hidden_field in form.hidden_fields %}
+		{{ hidden_field }}
+		{% endfor %}
+
+		{% for field in form.visible_fields %}
+		<div class="form-group">
+			{{ field.label_tag }}
+			{% render_field field class="form-control" %}
+			{% if field.help_text %}
+			<small class="form-text text-muted">{{ field.help_text }}</small>
+			{% endif %}
+		</div>
+		{% endfor %}
+		<!-- {{form.as_p}} -->
+
+		<button type="submit" class="btn btn-primary"><i class="fa fa-user-plus"></i> Insert dish</button>
+		{%else%}
+		<p>Dish inserted..</p>
+		<button class="btn btn-primary" type="submit" style="margin: 1rem 0;" onClick="window.history.back();return false;">Back</button>
+		{%endif%}
+	</div>
+</form>
+
+
+{%endblock%}

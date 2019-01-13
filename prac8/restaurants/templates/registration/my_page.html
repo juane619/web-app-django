@@ -1,0 +1,67 @@
+<script>
+	function modifyConfirm() {
+		var confirm = window.confirm("Are you sure of profile information update?");
+		return confirm;
+	}
+</script>
+
+{% extends "index.html" %}
+
+{% block Content %}
+
+{% if not user %}
+
+<p>Start session to show the profile info</p>
+
+{%else%}
+
+<div id="user_info">
+	{% if not modified %}
+	<h3>User info</h3>
+	<form class="form-horizontal" action="/edit_profile" method="post" onsubmit="return modifyConfirm();">
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Username</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="username" type="text" value='{{ user_profile }}' readonly>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Full name</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="name" type="text" value='{{ user_profile.name }}'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Email</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="email" type="text" value='{{ user_profile.name }}'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Phone</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="phone" type="text" value='{{ user_profile.name }}'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Password</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="password" type="password" value='{{ user_profile.name }}'>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label"></label>
+			<div class="col-md-8">
+				<input type="submit" class="btn btn-primary" value="Save Changes">
+				<input type="reset" class="btn btn-default" value="Cancel">
+			</div>
+		</div>
+	</form>
+	{% else %}
+	<p>User info has been updated succesfull!</p>
+	{% endif %}
+</div>
+
+{%endif%}
+
+{%endblock%}

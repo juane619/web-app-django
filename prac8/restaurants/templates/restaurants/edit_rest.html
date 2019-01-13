@@ -1,0 +1,63 @@
+<script>
+	function modifyConfirm() {
+		var confirm = window.confirm("Are you sure of restaurant info update?");
+		return confirm;
+	}
+</script>
+
+{% extends "index.html" %}
+
+{%load rest_extra%}
+
+{% block Content %}
+
+<div id="rest_info">
+	<h3>Modify restaurant info</h3>
+	{% if not modified%}
+	<form class="form-horizontal" method="POST" onsubmit="return modifyConfirm();">
+		{%csrf_token%}
+		{%comment%}
+		<!-- 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">ID rest</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="rest_id" type="text" value='{{ rest|get:"_id" }}' readonly>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Name:</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="rest_name" type="text" value="{{ rest.name }}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-3 control-label">Location:</label>
+			<div class="col-lg-8">
+				<input class="form-control" name="rest_location" type="text" value="{{rest.location}}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label"></label>
+			<div class="col-md-8">
+				<input type="submit" class="btn btn-primary" value="Save Changes">
+				<input type="reset" class="btn btn-default" value="Back" onClick="window.history.back();return false;">
+			</div>
+		</div>
+	 -->{%endcomment%}
+		{{form.as_p}}
+		<div class="form-group">
+			<label class="col-md-3 control-label"></label>
+			<div class="col-md-8">
+				<input type="submit" class="btn btn-primary" value="Save Changes">
+				<input type="reset" class="btn btn-default" value="Back" onClick="window.history.back();return false;">
+			</div>
+		</div>
+	</form>
+	{%else%}
+	<p>Restaurant info has been updated succesfull!</p>
+	<input type="reset" class="btn btn-default" value="Back" onClick="window.history.back();return false;">
+	{%endif%}
+</div>
+
+
+{%endblock%}

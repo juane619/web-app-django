@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{%load rest_extra%}
+
+{% block Content %}
+<div class="card-panel grey darken-1 ">
+
+  <h3> Found {{object_list.count}} dishes </h3>
+
+    <ul class="list-group radio-list-group " style="overflow: scroll; max-height: 100vh">
+
+      {% for dish in object_list %}
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-md-8">
+            <h6> <u>Dish n {{ forloop.counter }} </u></h6>
+            <b>Name:</b> {{ dish.name }}<br>
+            <b>Allergens:</b> {{dish.allergens}}<br>
+            <b>Type cousine:</b> {{dish.type_cousine}}<br>
+            <b>Price:</b> {{dish.price}}<br>
+          </div>
+
+        </div>
+        <a class="btn btn-secondary" href="{%url 'dish_edit' dish.pk%}">Edit</a>
+
+        <form action="{%url 'dish_delete' dish.id%}" method="post" style="display: inline">
+          {%csrf_token%}
+          <input type="hidden" name="dish_id" value="{{dish.id}}"/>
+          <button type="submit" class="btn btn-secondary">Delete</button>
+        </form>
+      </li>
+      {%empty%}
+      <li>No dishes yet.</li>
+      {% endfor %}
+
+    </ul>
+    <button class="btn btn-primary" type="submit" style="margin: 1rem 0;" onClick="window.history.back();return false;">Back</button>
+    
+
+</div>
+
+
+
+{% endblock %}

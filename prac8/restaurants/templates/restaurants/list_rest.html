@@ -1,0 +1,341 @@
+{% extends "index.html" %}
+{%load rest_extra%}
+
+{% block Content %}
+<div class="card-panel grey darken-1 ">
+
+  <h3 id="n_restaurants"> </h3>
+
+  {%comment%}
+  <!-- <ul class="list-group " style="overflow: scroll; max-height: 100vh">
+
+      {% for rest in object_list %}
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-md-8">
+            <h6> <u>Rest n {{ forloop.counter }} </u></h6>
+            <b>Name:</b> {{ rest.name }}<br>
+            <b>Location:</b> {{rest.location}}<br>
+          </div>
+
+        </div>
+        <a class="btn btn-secondary" href="{%url 'rest_edit' rest.pk%}">Edit</a>
+
+        <form action="{%url 'rest_delete' rest.id%}" method="post" style="display: inline">
+          {%csrf_token%}
+          <input type="hidden" name="rest_id" value="{{rest.id}}"/>
+          <button type="submit" class="btn btn-secondary">Delete</button>
+        </form>
+      </li>
+      {%empty%}
+      <li>No restaurants yet.</li>
+      {% endfor %}
+
+    </ul> -->
+  {%endcomment%}
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <div class="dataTables_length bs-select">
+        <label>Show entries:
+          <select id="page_length" name="page_length" aria-controls="dtBasicExample" class="custom-select custom-select-sm form-control form-control-sm">
+            <!-- <option value="1">1</option>
+            <option value="2">2</option> -->
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="31">31</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+      <div id="dtBasicExample_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm"
+            placeholder="" aria-controls="dtBasicExample"></label></div>
+    </div>
+  </div>
+
+  <!-- TABLA PAGINADA SIN AJAX -->
+
+  <table class="table" id="rest_table">
+    <thead>
+      <tr>
+        <th scope="col">Nº</th>
+        <!-- <th scope="col">ID</th> -->
+        <th scope="col">Name</th>
+        <th scope="col">Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Here WILL INSERT ROWS with JQuery (without AJAX) -->
+
+      <!-- {% for rest in object_list %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{rest.id}}</td>
+        <td>{{ rest.name }}</td>
+        <td>{{rest.location}}</td>
+      </tr>
+      {% endfor %} -->
+    </tbody>
+  </table>
+
+  <!-- Links pagination -->
+  <!-- <p id="link_pages" style="text-align: center;">
+    <a id="first_page" href="javascript:;" title="Primera página">&lt;&lt;</a>
+    <a id="previus_page" href="javascript:;" title="Página anterior">&lt;&nbsp;</a>
+    Here will inserted with JQuery
+    <a id="next_page" href="javascript:;" title="Página siguiente">&gt;</a>
+    <a id="last_page" href="javascript:;" title="Última página">&gt;&gt;</a>
+  </p> -->
+  <ul class="pagination" id="link_pages">
+    <li class="page-item"><a class="page-link" id="first_page" href="javascript:;" title="First page">&lt;&lt;</a></li>
+    <li class="page-item"><a class="page-link" id="previus_page" href="javascript:;" title="Previus page">&lt;</a></li>
+    <!-- Here will inserted with JQuery-->
+    <li class="page-item"><a class="page-link" id="next_page" href="javascript:;" title="Next page">&gt;</a></li>
+    <li class="page-item"><a class="page-link" id="last_page" href="javascript:;" title="Last page">&gt;&gt;</a></li>
+  </ul>
+
+  <!-- Pagination WITHOUT Ajax -->
+  <!-- <script type="text/javascript">
+    var $previusLink = $('#previus_page');
+    var $nextLink = $("#next_page");
+    var linksPages = 0;
+    
+    var valuePageLength = 0;
+    var currentNumPage = 1;
+
+    var rests = [];
+    {% for rest in object_list %}
+    rests.push({ id: '{{rest.id}}', name: '{{rest.name}}', location: '{{rest.location}}' });
+    {% endfor %}
+
+    var restLength = rests.length;
+
+    $(document).ready(function () {
+      valuePageLength = $('#page_length').val();
+      linksPages = getLinkPages(valuePageLength, restLength);
+
+      writeLinkPages(linksPages);
+      writeRows(valuePageLength, currentNumPage, rests);
+    });
+
+    $("#page_length").change(function () {
+      currentNumPage = 1;
+      $previusLink.nextUntil($nextLink).remove();
+
+      valuePageLength = $(this).val();
+      linksPages = getLinkPages(valuePageLength, restLength);
+
+      writeRows(valuePageLength, currentNumPage, rests);
+      writeLinkPages(linksPages);
+    });
+
+    $(document).on("click", "#link_pages>a", function () {
+      var clickedBtnID = $(this).attr('id'); // or var clickedBtnID = this.id
+      var numPage = 0;
+
+      if (clickedBtnID === "previus_page") {
+        if (currentNumPage > 1) {
+          writeRows(valuePageLength, --currentNumPage, rests);
+        }
+      } else if (clickedBtnID === "first_page") {
+        currentNumPage = 1;
+        writeRows(valuePageLength, currentNumPage, rests);
+      } else if (clickedBtnID === "next_page") {
+        if (currentNumPage < linksPages) {
+          writeRows(valuePageLength, ++currentNumPage, rests);
+        }
+      } else if (clickedBtnID === "last_page") {
+        currentNumPage = linksPages;
+        writeRows(valuePageLength, currentNumPage, rests);
+      } else {
+        numPage = clickedBtnID.match(/\d+/g);
+
+        if (numPage != currentNumPage) {
+          writeRows(valuePageLength, numPage, rests);
+          currentNumPage = numPage;
+        }
+      }
+    });
+
+    function getLinkPages(pageLength, restLength) {
+      var linksPages = 0;
+
+      if (pageLength != 0) {
+        if (pageLength > restLength) {
+          linksPages = 1;
+          console.log('Hay menos restaurantes..');
+        } else {
+          linksPages = (restLength % pageLength) == 0 ? restLength / pageLength : parseInt(restLength / pageLength + 1);
+          console.log(linksPages);
+        }
+      } else {
+        console.error("Problema en el select");
+        return -1;
+      }
+
+      return linksPages;
+    }
+
+    function writeLinkPages(linksPages) {
+      for (i = linksPages; i > 0; i--) {
+        $('<a id="page' + i + '" href="javascript:;" title="Página ' + i + '">' + i + '</a>').append(" ").insertAfter($previusLink);
+      }
+    }
+
+    function writeRows(pageLength, numPag, rests) {
+      if (pageLength > restLength)
+        pageLength = restLength;
+
+      var $tbody = $("#rest_table>tbody");
+      var rows = "";
+
+      for (i = pageLength * (numPag - 1); i < pageLength * numPag && i < restLength; i++) {
+        rows +=
+          '<tr>\
+            <th scope="row">'+ (i + 1) + ' </th>\
+            <td>'+ rests[i].id + '</td>\
+            <td>'+ rests[i].name + '</td>\
+            <td>'+ rests[i].location + '</td>\
+            </tr>'
+      }
+
+      $tbody.html(rows);
+    }
+
+  </script> -->
+
+  <!-- Pagination with AJAX -->
+  <script>
+    var filterName = '{{filter_name}}'
+    var valuePageLength = $('#page_length').val();
+    var currentNumPage = 1;
+    var typeSearch = '{{type_search}}'
+
+    // paginator
+    var $previusLink = $('#previus_page').parent();
+    var $nextLink = $("#next_page").parent();
+    var lastPage = 0;
+
+    $(function () {
+      requestAjax();
+    });
+
+    function requestAjax() {
+      $.ajax({
+        url: "{% url 'busqueda_restaurantes' %}",
+        type: 'get',
+        // creamos peticion get con estos "data"
+        data: {
+          filterName: filterName,
+          typeSearch: typeSearch,
+          pageLength: valuePageLength,
+          numPage: currentNumPage
+        },
+        success: function (data) {
+          console.log('PIDIENDO DATOS..');
+          writeRows(data.pageLength, data.numPage, data.rests, data.num_rests);
+          deleteLinksPages();
+          writeLinkPages(data.num_pages);
+        },
+        failure: function (data) {
+          alert('esto no vá');
+        }
+      });
+    }
+
+    $("#page_length").change(function () {
+      currentNumPage = 1;
+      valuePageLength = $(this).val();
+      requestAjax();
+    });
+
+    $(document).on("click", "#link_pages>li>a", function () {
+      var clickedBtnID = $(this).attr('id'); // or var clickedBtnID = this.id
+
+      if (clickedBtnID === "previus_page") {
+        if (currentNumPage > 1) {
+          currentNumPage--;
+          requestAjax();
+        }
+      } else if (clickedBtnID === "first_page") {
+        if (currentNumPage != 1) {
+          currentNumPage = 1;
+          requestAjax();
+        }
+      } else if (clickedBtnID === "next_page") {
+        if (currentNumPage < lastPage) {
+          currentNumPage++;
+          requestAjax();
+        }
+      } else if (clickedBtnID === "last_page") {
+        if (currentNumPage != lastPage) {
+          currentNumPage = lastPage;
+          requestAjax();
+        }
+      } else {
+        var numPage = parseInt(clickedBtnID.match(/\d+/g));
+
+        if (numPage != currentNumPage) {
+          currentNumPage = numPage;
+          requestAjax();
+        }
+      }
+    });
+
+
+
+    function writeRows(pageLength, numPag, rests, num_rests) {
+      var $tbody = $("#rest_table>tbody");
+      var rows = "";
+
+      $("#n_restaurants").html("Found " + num_rests + " restaurants.");
+
+      for (i = 0; i < pageLength && i < rests.length; i++) {
+        var edit_url = "{% url 'rest_edit' 12345%}".replace(/12345/, rests[i].id);
+        var delete_url = "{% url 'rest_delete' 12345%}".replace(/12345/, rests[i].id);
+        var map_url = "{% url 'rest_map' 12345 45678%}".replace(/12345/, rests[i].location[0]).replace(/45678/, rests[i].location[1]);
+        rows +=
+          '<tr>\
+            <th scope="row">'+ (i + pageLength * (numPag - 1) + 1) + ' </th>\
+            <td>'+ rests[i].name + '</td>\
+            <td>'+ rests[i].location + '</td>\
+            <td><a href="'+ edit_url + '">Edit</a></td>\
+            <td>\
+              <form action="'+ delete_url + '" method="post">\
+                {% csrf_token %}\
+                <a href = "javascript:;" onclick = "parentNode.submit();" >Delete</a >\
+              </form >\
+            </td >\
+            <td><a href="'+ map_url + '">Map</a></td>\
+            </tr>'
+      }
+      //<td>'+ rests[i].id + '</td>\
+      $tbody.html(rows);
+    }
+
+    function deleteLinksPages() {
+      $previusLink.nextUntil($nextLink).remove();
+    }
+
+    function writeLinkPages(linksPages) {
+      for (i = linksPages; i > 0; i--) {
+        $('<li class="page-item"><a class="page-link" id="page' + i + '" href="javascript:;" title="Página ' + i + '">' + i + '</a></li>').append(" ").insertAfter($previusLink);
+      }
+      lastPage = linksPages;
+    }
+  </script>
+
+  <button class="btn btn-primary" type="submit" style="margin: 1rem 0;" onClick="window.history.back();return false;">Back</button>
+
+
+</div>
+
+
+
+{% endblock %}
