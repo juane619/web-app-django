@@ -1,5 +1,5 @@
 # web-app-django
-Full web app django using mongoDB to manage restaurants.
+Full web app django using mongoDB to manage restaurants (University practice).
 
 Web app to manage restaurants, dishes and locate it in map layout (Google maps API).
 
